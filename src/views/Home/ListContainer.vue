@@ -6,18 +6,13 @@
           <!--banner轮播-->
           <div class="swiper-container" id="mySwiper">
             <div class="swiper-wrapper">
-              <div class="swiper-slide">
-                <img src="images/Home/ListContainer/banner1.jpg" />
+              <div
+                class="swiper-slide"
+                v-for="carousel in bannerList"
+                :key="carousel.id"
+              >
+                <img :src="carousel.imgUrl" />
               </div>
-              <!-- <div class="swiper-slide">
-                <img src="images/Home/ListContainer/banner2.jpg" />
-              </div>
-              <div class="swiper-slide">
-                <img src="images/Home/ListContainer/banner3.jpg" />
-              </div>
-              <div class="swiper-slide">
-                <img src="images/Home/ListContainer/banner4.jpg" />
-              </div> -->
             </div>
             <!-- 如果需要分页器 -->
             <div class="swiper-pagination"></div>
@@ -102,8 +97,65 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import Swiper from "swiper";
 export default {
   name: "ListContainer",
+  mounted() {
+    // 派发请求
+    this.$store.dispatch("bannerList");
+  },
+  computed: {
+    ...mapState({
+      // 从仓库里面拿到bannerList数据
+      bannerList: (state) => {
+        return state.home.bannerList;
+      },
+    }),
+  },
+  watch: {
+    // 监听bannerList加载swiper组件
+    bannerList: {
+      handler: function (to, from) {
+        this.$nextTick(() => {
+          var mySwiper = new Swiper(
+            document.querySelector(".swiper-container"),
+            {
+              //设置轮播图防线
+              direction: "horizontal",
+              //开启循环模式
+              loop: true,
+              // 如果需要分页器
+              pagination: {
+                el: ".swiper-pagination",
+                //分页器类型
+                type: "bullets",
+                //点击分页器，切换轮播
+                clickable: true,
+              },
+              //自动轮播
+              autoplay: {
+                delay: 2000,
+                //新版本的写法：目前是5版本
+                // pauseOnMouseEnter: true,
+                //如果设置为true，当切换到最后一个slide时停止自动切换
+                stopOnLastSlide: true,
+                //用户操作swiper之后，是否禁止autoplay
+                disableOnInteraction: false,
+              },
+              // 如果需要前进后退按钮
+              navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+              },
+              //切换效果
+              // effect: "cube",
+            }
+          );
+        });
+      },
+    },
+  },
 };
 </script>
 

@@ -5,8 +5,8 @@
     <today-recommend></today-recommend>
     <rank></rank>
     <like></like>
-    <floor></floor>
-    <floor></floor>
+    <floor v-for="flist in floorList" :key="flist.id" :fList="flist"></floor>
+    <!-- <floor></floor> -->
     <brand></brand>
   </div>
 </template>
@@ -19,6 +19,7 @@ import ListContainer from "./ListContainer.vue";
 import Rank from "./Rank.vue";
 import TodayRecommend from "./TodayRecommend.vue";
 import TypeNav from "../../components/TypeNav/TypeNav.vue";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -29,6 +30,16 @@ export default {
     Like,
     Floor,
     Brand,
+  },
+  mounted() {
+    this.$store.dispatch("floorList");
+  },
+  computed: {
+    ...mapState({
+      floorList: (store) => {
+        return store.home.floorList;
+      },
+    }),
   },
 };
 </script>

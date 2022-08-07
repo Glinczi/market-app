@@ -4,6 +4,11 @@ import App from "./App.vue";
 import router from "@/router";
 // 引入仓库
 import store from "@/store";
+// 使用mock
+require("@/mock/mockServe");
+
+// 引入swiper的样式
+import "swiper/css/swiper.css";
 
 Vue.config.productionTip = false;
 

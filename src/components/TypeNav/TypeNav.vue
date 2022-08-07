@@ -87,10 +87,8 @@ export default {
   name: "TypeNav",
   // 组件挂载完毕,可以向服务器发请求
   mounted() {
-    // 通过Vuex的action方法,将数据存储在公共仓库里面
-    this.$store.dispatch("categoryList");
     // 挂载完毕,判断当前是不是search页面,是就隐藏三级联动
-    if (this.$route.path === "/search") {
+    if (this.$route.path.includes("/search")) {
       this.show = false;
     }
   },
@@ -150,6 +148,10 @@ export default {
         }
         // 将最后确定的query放入location中
         location.query = query;
+        // 判断有没有params参数,如果有就顺便带上
+        if (this.$route.params) {
+          location.params = this.$route.params;
+        }
         // 最后的跳转
         this.$router.push(location);
       } else {

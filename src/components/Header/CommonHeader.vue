@@ -72,24 +72,30 @@ export default {
      * @return {*}
      */
     goSearch() {
-      // 路由传参
-      // 1. 字符串的写法
-      // params传参的时候,记得路由要去占位
-      // this.$router.push(`/search/${this.keyword}`);
-      // 如果是query传参
-      // this.$router.push(`/search?kw=${this.keyword}`);
-      // 2. 对象的写法(常用)
-      this.$router.push({
-        // TIPS 这里需要注意,路由里面也需要设置name属性
-        // 不能用path的形式
-        name: "search",
-        params: {
-          keyword: this.keyword,
-        },
-        query: {
-          kw: this.keyword.toUpperCase(),
-        },
-      });
+      if (this.keyword != "") {
+        // 路由传参
+        // 1. 字符串的写法
+        // params传参的时候,记得路由要去占位
+        // this.$router.push(`/search/${this.keyword}`);
+        // 如果是query传参
+        // this.$router.push(`/search?kw=${this.keyword}`);
+        // 2. 对象的写法(常用)
+        let location = {
+          // TIPS 这里需要注意,路由里面也需要设置name属性
+          // 不能用path的形式
+          name: "search",
+          params: {
+            keyword: this.keyword,
+          },
+        };
+        // 判断有没有query参数需要带
+        if (this.$route.query) {
+          location.query = this.$route.query;
+        }
+        this.$router.push(location);
+      } else {
+        return;
+      }
     },
   },
 };

@@ -27,6 +27,11 @@ export default {
       return !(this.$route.path == "/login" || this.$route.path == "/register");
     },
   },
+  mounted() {
+    // 请求一次,优化
+    // 通过Vuex的action方法,将数据存储在公共仓库里面
+    this.$store.dispatch("categoryList");
+  },
 };
 </script>
 <st
