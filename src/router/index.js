@@ -8,8 +8,8 @@ import { removeToken } from "@/utils/token";
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-  // mode: "history",
-  // base: process.env.BASE_URL,
+  mode: "hash",
+  base: process.env.BASE_URL,
   routes,
   // NEW 滚动行为
   scrollBehavior(to, from, savedPosition) {
