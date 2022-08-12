@@ -7,12 +7,16 @@
         <div class="container">
           <div class="loginList">
             <p>尚品汇欢迎您！</p>
-            <p>
+            <p v-if="!getUserName">
               <span>请</span>
               <router-link to="/login">登录</router-link>
               <router-link to="/register" class="register"
                 >免费注册</router-link
               >
+            </p>
+            <p v-else>
+              <a>{{ getUserName }}</a>
+              <a class="register" @click="loginout">退出登录</a>
             </p>
           </div>
           <div class="typeList">
@@ -60,6 +64,16 @@
 <script>
 export default {
   name: "common-header",
+  mounted() {
+    // 全局事件总线监听是否删除input里面的值
+    this.$root.$on("clearInput", () => {
+      this.keyword = "";
+    });
+  },
+  destroyed() {
+    // 关闭全局事件总线的的监听
+    this.$root.$off("clearInput");
+  },
   data() {
     return {
       // input 双向绑定的数据
@@ -96,6 +110,21 @@ export default {
       } else {
         return;
       }
+    },
+    // 退出登录
+    async loginout() {
+      try {
+        await this.$store.dispatch("userLoginout");
+        alert("退出成功");
+        this.$router.push("/home");
+      } catch (error) {
+        alert(error);
+      }
+    },
+  },
+  computed: {
+    getUserName() {
+      return this.$store.state.user.userInfo.name;
     },
   },
 };

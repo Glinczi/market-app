@@ -4,7 +4,11 @@ import Vuex from "vuex";
 // 引入模块仓库
 import home from "./home";
 import search from "./search";
-
+import detail from "./detail";
+import getUuidToken from "@/utils/uuid_token";
+import cart from "./cart";
+import user from "./user";
+import VueRouter from "vue-router";
 //
 Vue.use(Vuex);
 
@@ -12,6 +16,9 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     // 仓库,存储数据的地方
+    goodsInfo: {},
+    // 这里采用的是封装方法
+    uuid_token: getUuidToken(),
   },
   mutations: {
     // 修改state中数据的方法
@@ -25,5 +32,8 @@ export default new Vuex.Store({
   modules: {
     home,
     search,
+    detail,
+    cart,
+    user,
   },
 });

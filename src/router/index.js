@@ -1,79 +1,56 @@
-/*
- * @Author: Iamxiaoz gcz9956@outlook.com
- * @Date: 2022-08-02 17:33:03
- * @LastEditors: Iamxiaoz gcz9956@outlook.com
- * @LastEditTime: 2022-08-05 00:42:50
- * @FilePath: \sggapp\src\router\index.js
- * @Description: 路由配置页面
- */
-// TIPS 配置路由放在router文件夹中
-
+import store from "@/store";
 import Vue from "vue";
 import VueRouter from "vue-router";
+import routes from "./routes";
+import { removeToken } from "@/utils/token";
 
 // 使用插件
 Vue.use(VueRouter);
-// 引入首页
-import CommonHeader from "../views/Home/Home.vue";
 
-export default new VueRouter({
+const router = new VueRouter({
   // mode: "history",
   // base: process.env.BASE_URL,
-  routes: [
-    {
-      // 重定向,访问/的时候应该定向到首页
-      path: "*", // TIPS 这里的路径需要注意,*
-      redirect: "/home",
-    },
-    {
-      // 主页
-      path: "/home",
-      component: CommonHeader,
-      meta: {
-        showFooter: true,
-      },
-    },
-    {
-      // 搜索页面
-      path: "/search/:keyword?",
-      // path: "/search",
-      name: "search",
-      component: () => import("../views/Search/Search.vue"),
-      meta: {
-        showFooter: true,
-      },
-      // TIPS 开启props接收参数
-      // 这种方式可以降低参数和组件之间的耦合????
-      // 1. 布尔值的写法
-      // props: true,
-      // 2. 对象写法(额外的传递参数)
-      // props:{a:1,b:2}
-      // NEW 3. 函数形式写法??(推荐)
-      props: (route) => {
-        return {
-          keyword: route.params.keyword,
-          name: route.query.name,
-          // TODO 这里层级怎么弄?l1?l2?l3?
-        };
-      },
-    },
-    {
-      // 登录页面
-      path: "/login",
-      name: "login",
-      component: () => import("../views/Login/Login.vue"),
-      meta: {
-        showFooter: false,
-      },
-    },
-    {
-      // 注册页面
-      path: "/register",
-      name: "register",
-      component: () => import("../views/Register/Register.vue"),
-      meta: {
-        showFooter: false,
-      },
-    },
-  ],
+  routes,
+  // NEW 滚动行为
+  scrollBehavior(to, from, savedPosition) {
+    // 始终滚动到顶部
+    // TODO 官网是top:0,有啥区别
+    return { y: 0 };
+  },
+});
+export default router;
+
+router.beforeEach(async (to, from, next) => {
+  let token = store.state.user.token;
+  let name = store.state.user.userInfo.name;
+  if (token) {
+    // 如果有token,不能去登陆页面
+    if (to.path == "/login") {
+      next(false);
+    } else {
+      // 对于其他页面可能存在token失效的情况
+      // 可以先看看能不能获取到用户信息,可以说明token没有过期
+      if (name) {
+        // 有token,有信息,放行
+        next();
+      } else {
+        // 有token,无信息
+        // 获取用户信息,成功就放行,不成功就清除旧token,并返回登录页面
+        try {
+          await store.dispatch("userInfo");
+          next();
+        } catch (error) {
+          removeToken();
+          next("/login");
+        }
+      }
+    }
+  } else {
+    // 不能跳转到购物车,和商品添加成功页面
+    if (to.path == "/addcartsuccess" || to.path == "/shopcart") {
+      next("/login");
+    } else {
+      next();
+    }
+  }
 });

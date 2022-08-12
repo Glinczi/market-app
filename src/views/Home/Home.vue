@@ -33,6 +33,8 @@ export default {
   },
   mounted() {
     this.$store.dispatch("floorList");
+    // 获取登录用户的信息
+    this.$store.dispatch("userInfo");
   },
   computed: {
     ...mapState({

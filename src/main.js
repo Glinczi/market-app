@@ -11,12 +11,15 @@ require("@/mock/mockServe");
 import "swiper/css/swiper.css";
 
 Vue.config.productionTip = false;
-
+// ----------------全局组件注册区--------------------
 // 三级联动组件全局注册
 import TypeNav from "./components/TypeNav/TypeNav.vue";
 // 也可以通过TypeNav.name获取名字
 Vue.component("TypeNav", TypeNav);
-
+// 分页器组件全局注册
+import MyPagination from "./components/Pagination/MyPagination.vue";
+Vue.component("MyPagination", MyPagination);
+// ----------------全局组件注册区--------------------
 new Vue({
   // key Value一致,省略Value
   /* 

@@ -31,9 +31,11 @@
               >
                 <h3 @mouseenter="changeIndex(index)">
                   <!-- 一级路由跳转 -->
-                  <a :data-name="l1.categoryName" :data-l1="l1.categoryId">{{
-                    l1.categoryName
-                  }}</a>
+                  <a
+                    :data-categoryName="l1.categoryName"
+                    :data-category1Id="l1.categoryId"
+                    >{{ l1.categoryName }}</a
+                  >
                 </h3>
                 <!-- 二级,三级 -->
                 <div
@@ -49,8 +51,8 @@
                       <dt>
                         <!-- 二级路由跳转 -->
                         <a
-                          :data-name="l2.categoryName"
-                          :data-l2="l2.categoryId"
+                          :data-categoryName="l2.categoryName"
+                          :data-category2Id="l2.categoryId"
                           >{{ l2.categoryName }}</a
                         >
                       </dt>
@@ -58,8 +60,8 @@
                         <em v-for="l3 in l2.categoryChild" :key="l3.categoryId">
                           <!-- 三级路由跳转 -->
                           <a
-                            :data-name="l3.categoryName"
-                            :data-l3="l3.categoryId"
+                            :data-categoryName="l3.categoryName"
+                            :data-category3Id="l3.categoryId"
                             >{{ l3.categoryName }}</a
                           >
                         </em>
@@ -88,7 +90,7 @@ export default {
   // 组件挂载完毕,可以向服务器发请求
   mounted() {
     // 挂载完毕,判断当前是不是search页面,是就隐藏三级联动
-    if (this.$route.path.includes("/search")) {
+    if (!this.$route.path.includes("/home")) {
       this.show = false;
     }
   },
@@ -133,18 +135,20 @@ export default {
         let location = {
           name: "search",
         };
-        let { name, l1, l2, l3 } = event.target.dataset;
-        console.log(name, l1, l2, l3);
+        console.log(event.target.dataset);
+        let { categoryname, category1id, category2id, category3id } =
+          event.target.dataset;
+        // console.log(categoryname, category1id, category2id, category3id);
         let query = {
-          name,
+          categoryName: categoryname,
         };
         // 动态添加所选的层级
-        if (l1) {
-          query.l1 = l1;
-        } else if (l2) {
-          query.l2 = l2;
+        if (category1id) {
+          query.category1Id = category1id;
+        } else if (category2id) {
+          query.category2Id = category2id;
         } else {
-          query.l3 = l3;
+          query.category3Id = category3id;
         }
         // 将最后确定的query放入location中
         location.query = query;
@@ -166,7 +170,7 @@ export default {
     // 移出隐藏三级联动
     hideNav() {
       // 如果是search页面才能触发
-      if (this.$route.path === "/search") {
+      if (this.$route.path !== "/home") {
         this.show = false;
       }
     },
@@ -215,12 +219,11 @@ export default {
       position: absolute;
       background: #fafafa;
       z-index: 999;
-      overflow: hidden;
 
       .all-sort-list2 {
         .item {
           h3 {
-            line-height: 28px;
+            line-height: 27px;
             font-size: 14px;
             font-weight: 400;
             overflow: hidden;
@@ -241,7 +244,7 @@ export default {
             left: 210px;
             border: 1px solid #ddd;
             top: 0;
-            z-index: 9999 !important;
+            z-index: 999 !important;
 
             .subitem {
               float: left;
@@ -290,7 +293,7 @@ export default {
           //   // background-color: yellowgreen;
           //   .item-list {
           //     // 通过display控制显示和隐藏
-          //     // display: block;
+          //     display: block;
           //   }
           // }
         }
@@ -312,7 +315,7 @@ export default {
     .sort-enter-active {
       // 定义进入过渡生效时的状态
       // 个类可以被用来定义进入过渡的过程时间，延迟和曲线函数。
-      transition: height 0.5s linear;
+      transition: height 0.1s linear;
     }
     // ------------------------------------------
   }

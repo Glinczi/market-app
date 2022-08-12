@@ -6,6 +6,9 @@ import NProgress from "nprogress";
 // 引入nprogress样式文件
 import "nprogress/nprogress.css";
 
+// 引入Vuex仓库
+import store from "@/store/index";
+
 // 1 利用axios的方法去创建一个Axios实例
 // TIPS 新axios只是没有取消请求和批量发请求的方法,其它所有语法都是一致的
 const requests = axios.create({
@@ -19,6 +22,12 @@ const requests = axios.create({
 // 在发请求之前,请求拦截器可以监测到
 requests.interceptors.request.use((config) => {
   // config: 配置对象,里面有一个很重要的属性,headers请求头
+  // -------------
+  // 给headers添加uuid_token,每次发送都请求
+  // console.log(store);
+  config.headers.userTempId = store.state.uuid_token;
+  config.headers.token = store.state.user.token;
+  // ------------
   // 进度条开始
   NProgress.start();
   return config;
