@@ -9,7 +9,6 @@ Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: "hash",
-  base: process.env.BASE_URL,
   routes,
   // NEW 滚动行为
   scrollBehavior(to, from, savedPosition) {
